@@ -13,7 +13,8 @@ function draw() {
   mondrian.show(); // Display the artwork
   mondrian.updatePositions();
   mondrian.updateSizes();
-  mondrian.updateLines()
+  mondrian.updateLines();
+  mondrian.updateJumpingShapes();
 
 }
 
@@ -54,10 +55,23 @@ class Artwork {
   updateSizes() {
     let time = millis() * 0.001;
     for (let shape of this.shapes) {
-      let scaleFactor = 1 + sin(time + shape.originalX) * 0.1;
+      if (shape.type === 'dotted'){
+        let scaleFactor = 1 + sin(time + shape.originalX) * 0.2;
       shape.width = shape.originalWidth * scaleFactor;
       shape.height = shape.originalHeight * scaleFactor;
+      }
     }
+  }
+
+  updateJumpingShapes() {
+    let time = millis() * 0.005;
+    for (let shape of this.shapes) {
+      if (shape.type === 'circle' ) {
+        shape.y = shape.originalY + sin(time + shape.originalX) * 10;
+      }
+
+      }
+    
   }
 
   show() {
@@ -138,7 +152,11 @@ class Shape {
 function createArtwork() {
  
   // Small dot rectangle
-  mondrian.addShape(305, 262, 500, 100, '#FCE205', '#000000', 0, 'dotted');
+  mondrian.addShape(3, 262, 800, 100, '#FCE205', '#000000', 0, 'dotted');
+
+  mondrian.addShape(800, 0, 100, 8000, '#000000', '#000000', 0, 'dotted');
+
+  mondrian.addShape(3, 0, 2000, 100, '#FFA500', '#000000', 0, 'dotted');
 
   // Background lines
   mondrian.addShape(300, 200, 0, 0, '#000000', '#000000', 2, 'line', 800, 50);
@@ -198,4 +216,5 @@ function createArtwork() {
   mondrian.addShape(450, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
   mondrian.addShape(523, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
   mondrian.addShape(425, 200, 120, 60, '#FFD700', '#000000', 0, 'rectangle');
+ 
 }
