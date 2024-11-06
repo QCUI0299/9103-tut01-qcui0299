@@ -4,12 +4,14 @@ function setup() {
   createCanvas(windowWidth, windowHeight); // Create canvas based on window size
   mondrian = new Artwork(); // Create a new Artwork instance
   createArtwork(); // Generate initial artwork
-  noLoop(); // Prevent continuous drawing
+
 }
 
 function draw() {
   background(255);
+  translate(width / 2 - 400, height / 2 - 400); // Center the artwork
   mondrian.show(); // Display the artwork
+  mondrian.updatePositions();
 }
 
 function windowResized() {
@@ -28,6 +30,13 @@ class Artwork {
     this.shapes.push(new Shape(x, y, width, height, color, borderColor, borderWidth, type, endX, endY));
   }
 
+  updatePositions(){
+    let time = millis() * 0.001;
+    for (let shape of this.shapes) {
+      shape.x = shape.originalX + noise(time + shape.originalX) * 10 - 5;
+      shape.y = shape.originalY + noise(time + shape.originalY) * 10 - 5;
+    }
+  }
   scaleShapes() {
     // Calculate scaling factors
     const scaleX = windowWidth / 800;
@@ -67,15 +76,7 @@ class Shape {
     this.type = type;
   }
 
-  scale(scaleX, scaleY) {
-    // Scale the shape's position and size by scale factors
-    this.x = this.originalX * scaleX;
-    this.y = this.originalY * scaleY;
-    this.width = this.originalWidth * scaleX;
-    this.height = this.originalHeight * scaleY;
-    if (this.endX !== null) this.endX = this.originalEndX * scaleX;
-    if (this.endY !== null) this.endY = this.originalEndY * scaleY;
-  }
+
 
   show() {
     // Set border color and width
@@ -83,24 +84,29 @@ class Shape {
     strokeWeight(this.borderWidth);
     fill(this.color);
 
+    push();
+    translate(this.x, this.y);
+
     // Draw the shape based on its type
-    if (this.type === 'rectangle') {
-      rect(this.x, this.y, this.width, this.height);
-    } else if (this.type === 'semicircle') {
-      arc(this.x + this.width / 2, this.y + this.height / 2, this.width, this.height, 0, PI);
+     if (this.type === 'rectangle') {
+      rect(0, 0, this.width, this.height);
+    } else if (this.type === 'circle') {
+      ellipse(0, 0, this.width, this.height);
     } else if (this.type === 'triangle') {
       triangle(
-        this.x + this.width / 2, this.y,
-        this.x, this.y + this.height,
-        this.x + this.width, this.y + this.height
+        0, -this.height / 2,
+        -this.width / 2, this.height / 2,
+        this.width / 2, this.height / 2
       );
+    } else if (this.type === 'line') {
+      line(0, 0, this.endX - this.x, this.endY - this.y);
+    } else if (this.type === 'semicircle') {
+      arc(0, 0, this.width, this.height, 0, PI);
     } else if (this.type === 'dotted') {
       this.drawDottedRect();
-    } else if (this.type === 'circle') {
-      ellipse(this.x + this.width / 2, this.y + this.height / 2, this.width);
-    } else if (this.type === 'line') {
-      line(this.x, this.y, this.endX, this.endY);
     }
+
+    pop();
   }
 
   drawDottedRect() {
@@ -108,18 +114,18 @@ class Shape {
     let spacing = 15; // Spacing between dots
 
     // Draw dots to form a dotted rectangle
-    for (let y = this.y; y < this.y + this.height; y += spacing) {
-      for (let x = this.x; x < this.x + this.width; x += spacing) {
-        fill(this.color);
-        ellipse(x + dotSize / 2, y + dotSize / 2, dotSize, dotSize);
+    for (let y = 0; y < this.height; y += spacing) {
+      for (let x = 0; x < this.width; x += spacing) {
+        ellipse(x - this.width / 2, y - this.height / 2, dotSize, dotSize);
       }
     }
   }
 }
 
 function createArtwork() {
-  // Add background rectangle
-  mondrian.addShape(0, 0, 800, 800, '#F8F8FF', '#000000', 1, 'rectangle');
+ 
+  // Small dot rectangle
+  mondrian.addShape(305, 262, 500, 100, '#FCE205', '#000000', 0, 'dotted');
 
   // Background lines
   mondrian.addShape(300, 200, 0, 0, '#000000', '#000000', 2, 'line', 800, 50);
@@ -127,27 +133,27 @@ function createArtwork() {
   mondrian.addShape(0, 360, 0, 0, '#000000', '#000000', 3, 'line', 400, 360);
 
   // Small yellow circle with lines in the upper left corner
-  mondrian.addShape(15, 25, 80, 50, '#FFD700', '#000000', 0, 'circle');
-  mondrian.addShape(17, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 17, 100);
+  mondrian.addShape(55, 35, 80, 80, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(19, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 17, 100);
   mondrian.addShape(27, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 27, 130);
   mondrian.addShape(47, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 47, 150);
   mondrian.addShape(67, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 67, 130);
   mondrian.addShape(84, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 84, 150);
-  mondrian.addShape(93, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 93, 100);
+  mondrian.addShape(90, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 93, 100);
 
   // Light chrysanthemum circle
-  mondrian.addShape(80, 320, 350, 100, '#FAFAD2', '#000000', 0, 'circle');
+  mondrian.addShape(80, 320, 350, 350, '#FAFAD2', '#000000', 0, 'circle');
   
   // Red circle
-  mondrian.addShape(300, 450, 400, 100, '#FFA500', '#000000', 0, 'circle');
+  mondrian.addShape(300, 450, 400, 400, '#FFA500', '#000000', 0, 'circle');
 
   // Middle Lines
   mondrian.addShape(0, 420, 0, 0, '#000000', '#000000', 3, 'line', 400, 420);
   mondrian.addShape(380, 420, 0, 0, '#000000', '#000000', 3, 'line', 380, 800);
 
   // Middle red circle
-  mondrian.addShape(350, 350, 200, 50, '#F34213', '#000000', 0, 'circle');
-  mondrian.addShape(600, 80, 200, 50, '#F34213', '#000000', 0, 'circle');
+  mondrian.addShape(350, 350, 200, 200, '#F34213', '#000000', 0, 'circle');
+  mondrian.addShape(700, 80, 200, 200, '#F34213', '#000000', 0, 'circle');
 
   // Egg yellow long rectangle
   mondrian.addShape(450, 1, 250, 500, '#FAFAD2', '#000000', 0, 'rectangle');
@@ -164,8 +170,8 @@ function createArtwork() {
   mondrian.addShape(400, 630, 400, 50, '#0056B4', '#000000', 2, 'rectangle');
 
   // Yellow cat's paw
-  mondrian.addShape(400, 230, 40, 50, '#FFD700', '#000000', 0, 'circle');
-  mondrian.addShape(570, 230, 40, 50, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(400, 250, 50, 50, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(570, 250, 50, 50, '#FFD700', '#000000', 0, 'circle');
 
   // Lower left red and black circle
   mondrian.addShape(150, 520, 50, 50, '#F34213', '#000000', 0, 'circle');
@@ -174,14 +180,9 @@ function createArtwork() {
   // Lower left line
   mondrian.addShape(50, 615, 0, 0, '#000000', '#000000', 3, 'line', 380, 500);
 
-  // Small dot rectangle
-  mondrian.addShape(305, 262, 500, 100, '#FCE205', '#000000', 0, 'dotted');
-
-  // Semicircle
-  mondrian.addShape(600, 309, 100, 100, '#F34213', '#000000', 2, 'semicircle');
 
   // Cat head
-  mondrian.addShape(445, 150, 50, 50, '#FFD700', '#000000', 0, 'triangle');
-  mondrian.addShape(515, 150, 50, 50, '#FFD700', '#000000', 0, 'triangle');
-  mondrian.addShape(445, 200, 120, 60, '#FFD700', '#000000', 0, 'rectangle');
+  mondrian.addShape(450, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
+  mondrian.addShape(523, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
+  mondrian.addShape(425, 200, 120, 60, '#FFD700', '#000000', 0, 'rectangle');
 }
