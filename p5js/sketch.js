@@ -12,6 +12,9 @@ function draw() {
   translate(width / 2 - 400, height / 2 - 400); // Center the artwork
   mondrian.show(); // Display the artwork
   mondrian.updatePositions();
+  mondrian.updateSizes();
+  mondrian.updateLines()
+
 }
 
 function windowResized() {
@@ -37,13 +40,23 @@ class Artwork {
       shape.y = shape.originalY + noise(time + shape.originalY) * 10 - 5;
     }
   }
-  scaleShapes() {
-    // Calculate scaling factors
-    const scaleX = windowWidth / 800;
-    const scaleY = windowHeight / 800;
-    // Adjust each shape's size based on scale factors
+
+  updateLines() {
+    let time = millis() * 0.005;
     for (let shape of this.shapes) {
-      shape.scale(scaleX, scaleY);
+      if (shape.type === 'line') {
+        shape.endX = shape.originalEndX + noise(time + shape.originalX) * 10;
+        shape.endY = shape.originalEndY + noise(time + shape.originalY) * 10;
+      }
+    }
+  }
+
+  updateSizes() {
+    let time = millis() * 0.001;
+    for (let shape of this.shapes) {
+      let scaleFactor = 1 + sin(time + shape.originalX) * 0.1;
+      shape.width = shape.originalWidth * scaleFactor;
+      shape.height = shape.originalHeight * scaleFactor;
     }
   }
 
@@ -133,7 +146,7 @@ function createArtwork() {
   mondrian.addShape(0, 360, 0, 0, '#000000', '#000000', 3, 'line', 400, 360);
 
   // Small yellow circle with lines in the upper left corner
-  mondrian.addShape(55, 35, 80, 80, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(55, 45, 80, 80, '#FFD700', '#000000', 0, 'circle');
   mondrian.addShape(19, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 17, 100);
   mondrian.addShape(27, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 27, 130);
   mondrian.addShape(47, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 47, 150);
