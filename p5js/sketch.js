@@ -46,7 +46,7 @@ class Artwork {
   }
 
   updateSizes() {
-    let time = millis() * 0.001; // Time factor to control the speed of scaling animation
+    let time = millis() * 0.002; // Time factor to control the speed of scaling animation
     for (let shape of this.shapes) {
       if (shape.type === 'dotted'){
         // // Calculate a scale factor using a sine wave
@@ -77,7 +77,6 @@ class Artwork {
         shape.y = shape.originalY + map(noiseOffset, 0, 1, -15, 10); 
         shape.x = shape.originalX + map(noiseOffset, 0, 1, -10, 15); 
 
-        
       }
     }
 }
