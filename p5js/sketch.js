@@ -11,9 +11,9 @@ function draw() {
   background(255);
   translate(width / 2 - 400, height / 2 - 400); // Center the artwork
   mondrian.show(); // Display the artwork
-  mondrian.updatePositions();
-  mondrian.updateSizes();
-  mondrian.updateJumpingShapes();
+  mondrian.updatePositions(); // Driving position changes based on Perlin noise
+  mondrian.updateSizes(); // Implementing size changes
+  mondrian.updateJumpingShapes(); // Implementing the jump effect of objects
 
 }
 
@@ -34,9 +34,10 @@ class Artwork {
   }
 
   updatePositions(){
-    let time = millis() * 0.002;
+    let time = millis() * 0.002; // // Time factor to control the speed of scaling animation
     for (let shape of this.shapes) {
       if (shape.type === 'circle'){
+        // Update the position
         shape.x = shape.originalX + noise(time + shape.originalX) * 10 - 5;
         shape.y = shape.originalY + noise(time + shape.originalY) * 10 - 5;
       }
@@ -44,13 +45,13 @@ class Artwork {
     }
   }
 
- 
-
   updateSizes() {
-    let time = millis() * 0.001;
+    let time = millis() * 0.001; // Time factor to control the speed of scaling animation
     for (let shape of this.shapes) {
       if (shape.type === 'dotted'){
-        let scaleFactor = 1 + sin(time + shape.originalX) * 0.2;
+        // // Calculate a scale factor using a sine wave
+        let scaleFactor = 1 + sin(time + shape.originalX) * 0.1;
+        // Update the width and height based on the scale factor
       shape.width = shape.originalWidth * scaleFactor;
       shape.height = shape.originalHeight * scaleFactor;
       }
@@ -58,15 +59,28 @@ class Artwork {
   }
 
   updateJumpingShapes() {
-    let time = millis() * 0.005;
+    let time = millis() * 0.001; // Adjust the time scale to control how quickly the noise changes
     for (let shape of this.shapes) {
-      if (shape.type === 'circle' ) {
-        shape.y = shape.originalY + sin(time + shape.originalX) * 10;
-      }
+        // Use Perlin noise to generate smooth position changes
+        // Generate noise based on the shape's original coordinates and time
 
+        if (shape.type === 'circle') {
+        let noiseOffset = noise(time + shape.originalX * 0.01); 
+        shape.x = shape.originalX + map(noiseOffset, 0, 1, -50, 50); 
+
+      } else if(shape.type === 'rectangleStatic'){
+        let noiseOffset = noise(time + shape.originalX * 0.01); 
+        shape.y = shape.originalY + map(noiseOffset, 0, 1, -10, 50); 
       }
-    
-  }
+      else if(shape.type === 'catEye'){
+        let noiseOffset = noise(time * 2 + shape.originalY * 0.2); 
+        shape.y = shape.originalY + map(noiseOffset, 0, 1, -15, 10); 
+        shape.x = shape.originalX + map(noiseOffset, 0, 1, -10, 15); 
+
+        
+      }
+    }
+}
 
   show() {
     // Display each shape in the shapes array
@@ -129,6 +143,13 @@ class Shape {
       arc(0, 0, this.width, this.height, 0, PI);
     } else if (this.type === 'dotted') {
       this.drawDottedRect();
+    }else if (this.type === 'rectangleStatic') {
+      rect(0, 0, this.width, this.height);
+    }
+    else if (this.type === 'circleStatic') {
+      ellipse(0, 0, this.width, this.height);
+    } else if (this.type === 'catEye') {
+      ellipse(0, 0, this.width, this.height);
     }
 
     pop();
@@ -173,7 +194,7 @@ function createArtwork() {
   mondrian.addShape(67, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 67, 130);
   mondrian.addShape(84, 40, 0, 0, '#FFD700', '#FFD700', 4, 'line', 84, 150);
   mondrian.addShape(90, 45, 0, 0, '#FFD700', '#FFD700', 4, 'line', 93, 100);
-  mondrian.addShape(55, 45, 80, 80, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(55, 45, 80, 80, '#FFD700', '#000000', 0, 'circleStatic');
   
   // Light chrysanthemum circle
   mondrian.addShape(80, 320, 350, 350, '#FAFAD2', '#000000', 0, 'circle');
@@ -190,22 +211,24 @@ function createArtwork() {
   mondrian.addShape(700, 80, 200, 200, '#F34213', '#000000', 0, 'circle');
 
   // Egg yellow long rectangle
-  mondrian.addShape(450, 1, 250, 500, '#FAFAD2', '#000000', 0, 'rectangle');
-  mondrian.addShape(600, 650, 70, 150, '#FFA500', '#000000', 1, 'rectangle');
+  mondrian.addShape(450, 1, 250, 500, '#FAFAD2', '#000000', 0, 'rectangleStatic');
+  mondrian.addShape(600, 650, 70, 150, '#FFA500', '#000000', 1, 'rectangleStatic');
 
   // Black rectangle
-  mondrian.addShape(40, 300, 400, 60, '#000000', '#000000', 2, 'rectangle');
-  mondrian.addShape(20, 450, 20, 20, '#000000', '#000000', 2, 'rectangle');
-  mondrian.addShape(180, 400, 50, 40, '#000000', '#000000', 2, 'rectangle');
-  mondrian.addShape(450, 360, 15, 200, '#000000', '#000000', 2, 'rectangle');
+  mondrian.addShape(40, 300, 400, 60, '#000000', '#000000', 2, 'rectangleStatic');
+  mondrian.addShape(20, 450, 20, 20, '#000000', '#000000', 2, 'rectangleStatic');
+  mondrian.addShape(180, 400, 50, 40, '#000000', '#000000', 2, 'rectangleStatic');
+  mondrian.addShape(450, 360, 15, 200, '#000000', '#000000', 2, 'rectangleStatic');
 
   // Blue rectangle
   mondrian.addShape(300, 260, 400, 100, '#0056B4', '#000000', 2, 'rectangle');
-  mondrian.addShape(400, 630, 400, 50, '#0056B4', '#000000', 2, 'rectangle');
+  mondrian.addShape(400, 630, 400, 50, '#0056B4', '#000000', 2, 'rectangleStatic');
 
   // Yellow cat's paw
-  mondrian.addShape(400, 250, 50, 50, '#FFD700', '#000000', 0, 'circle');
-  mondrian.addShape(570, 250, 50, 50, '#FFD700', '#000000', 0, 'circle');
+  mondrian.addShape(400, 250, 50, 50, '#FFD700', '#000000', 0, 'circleStatic');
+  mondrian.addShape(570, 250, 50, 50, '#FFD700', '#000000', 0, 'circleStatic');
+
+
 
   // Lower left red and black circle
   mondrian.addShape(150, 520, 50, 50, '#F34213', '#000000', 0, 'circle');
@@ -218,4 +241,6 @@ function createArtwork() {
   mondrian.addShape(450, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
   mondrian.addShape(522, 180, 50, 50, '#FFD700', '#000000', 0, 'triangle');
   mondrian.addShape(425, 200, 120, 60, '#FFD700', '#000000', 0, 'rectangle');
+  mondrian.addShape(450, 230, 10, 30, '#000000', '#000000', 0, 'catEye');
+  mondrian.addShape(515, 230, 10, 30, '#000000', '#000000', 0, 'catEye');
 }
