@@ -33,30 +33,39 @@ class Artwork {
     this.shapes.push(new Shape(x, y, width, height, color, borderColor, borderWidth, type, endX, endY));
   }
 
-  updatePositions(){
-    let time = millis() * 0.002; // // Time factor to control the speed of scaling animation
+  updatePositions() {
+    let time = millis() * 0.002; // Time factor to control the speed of position animation
     for (let shape of this.shapes) {
-      if (shape.type === 'circle'){
-        // Update the position
-        shape.x = shape.originalX + noise(time + shape.originalX) * 10 - 5;
-        shape.y = shape.originalY + noise(time + shape.originalY) * 10 - 5;
+      if (shape.type === 'circle') {
+        // Apply Perlin noise with a unique random offset to each shape
+        let randomOffsetX = shape.randomOffsetX || random(0, 1000); 
+        let randomOffsetY = shape.randomOffsetY || random(0, 1000); 
+        shape.randomOffsetX = randomOffsetX; // Store the random offset for consistent animation
+        shape.randomOffsetY = randomOffsetY;
+        
+        shape.x = shape.originalX + noise(time + randomOffsetX) * 10 - 5; 
+        shape.y = shape.originalY + noise(time + randomOffsetY) * 10 - 5; 
       }
-     
     }
-  }
+}
 
-  updateSizes() {
-    let time = millis() * 0.002; // Time factor to control the speed of scaling animation
+updateSizes() {
+    let time = millis() * 0.002; // Time factor to control the speed of size animation
     for (let shape of this.shapes) {
-      if (shape.type === 'dotted'){
-        // // Calculate a scale factor using a sine wave
-        let scaleFactor = 1 + sin(time + shape.originalX) * 0.1;
-        // Update the width and height based on the scale factor
-      shape.width = shape.originalWidth * scaleFactor;
-      shape.height = shape.originalHeight * scaleFactor;
+      if (shape.type === 'dotted') {
+        // Add a random offset to each shape for unique scaling effects
+        let randomScaleOffset = shape.randomScaleOffset || random(0, 1000);
+        shape.randomScaleOffset = randomScaleOffset;
+        
+        // Calculate a scale factor using a sine wave and random offset
+        let scaleFactor = 1 + sin(time + shape.originalX + randomScaleOffset) * 0.1;
+        
+        // Update the width and height 
+        shape.width = shape.originalWidth * scaleFactor;
+        shape.height = shape.originalHeight * scaleFactor;
       }
     }
-  }
+}
 
   updateJumpingShapes() {
     let time = millis() * 0.001; // Adjust the time scale to control how quickly the noise changes

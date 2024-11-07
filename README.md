@@ -21,7 +21,8 @@ https://jp.pinterest.com/pin/182536591122488157/
  - In this type of animation, the dots on a grid grow, shrink, or move in a rhythmic manner. This effect can be seen in many dynamic backgrounds, such as animations, music visualizations, or the dynamic grid effects of certain graphic design tools.The expansion and contraction of the dots looks like the grid is "breathing", creating a rhythmic feeling.
  ### Image 2
  - ![img of example](img/1.png)
-https://au.pinterest.com/pin/design-studio--68741909701/
+ 
+ https://au.pinterest.com/pin/design-studio--68741909701/
 - This image inspired me to use a matrix of dots to create something different. The dotted rectangles combined with the Mondrian-style line and rectangle layout create an effect that feels both modern and dynamic.
 ### How did they affect my submissions
 - These two concepts inspired me to animate the dotted rectangles into a rhythmic, homeomorphic background. By adding motion to the dotted elements, they are no longer just static shapes; they move in sync with the overall rhythm, simulating the pulsating energy of Broadway and reinforcing the grid structure, reminiscent of Mondrian's work.
