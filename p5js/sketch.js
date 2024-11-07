@@ -147,16 +147,14 @@ class Shape {
       );
     } else if (this.type === 'line') {
       line(0, 0, this.endX - this.x, this.endY - this.y);
-    } else if (this.type === 'semicircle') {
-      arc(0, 0, this.width, this.height, 0, PI);
     } else if (this.type === 'dotted') {
       this.drawDottedRect();
-    }else if (this.type === 'rectangleStatic') {
+    }else if (this.type === 'rectangleStatic') {// static rectangle
       rect(0, 0, this.width, this.height);
     }
-    else if (this.type === 'circleStatic') {
+    else if (this.type === 'circleStatic') {// static circle
       ellipse(0, 0, this.width, this.height);
-    } else if (this.type === 'catEye') {
+    } else if (this.type === 'catEye') {// Circle that simulates cat's eyes
       ellipse(0, 0, this.width, this.height);
     }
 
