@@ -12,8 +12,8 @@
 - Size changes: Add a random resizing effect to the dot rectangle to give it a slight scaling effect.
 ### Uniqueness from other group members
 - Sound: Her works use sound to drive the position of lines and the size of circles.
-- Time:
-- 
+- Time: The entire screen moves according to time and bounces back when it hits the browsing frame. The cat's eyes change over time.
+- User Input: Feeding the cat fish through user interaction will trigger the cat's meow. The keyboard can control the appearance of floating bubbles on the screen.
 - The biggest difference from other members is that I transformed the dot rectangle into a homomorphic background, making the picture simulate the rhythm of Broadway.
 ## References to inspiration for animating individual code
  ### Image 1
